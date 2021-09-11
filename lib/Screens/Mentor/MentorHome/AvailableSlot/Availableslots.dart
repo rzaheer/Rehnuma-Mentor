@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rehnuma_mentor/models/slotModel.dart';
+import 'package:rehnuma_mentor/services/DBservice.dart';
 
 import '../../../../Global.dart';
 
@@ -8,6 +10,26 @@ class AvailableSlots extends StatefulWidget {
 }
 
 class _AvailableSlotsState extends State<AvailableSlots> {
+  List<SlotModel> slotList = [];
+
+  getAllSlots() async {
+    await DBService().getSlotsList().then((value) {
+      setState(() {
+        slotList = value;
+      });
+    });
+    print("Length :" + slotList.length.toString());
+    if (slotList.length != 0) {
+      print(slotList.last.day);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getAllSlots();
+  }
+
   int _radioValue = 0;
   final timeSlots = [
     "10:00-10:30",
@@ -21,6 +43,18 @@ class _AvailableSlotsState extends State<AvailableSlots> {
     "14:00-14:30",
     "14:30-15:00",
   ];
+
+ /*  final List<Map> timeSlot = [
+    {"slot": "10:00 AM -10:45 AM", "slotID": 0},
+    {"slot": "11:00 AM -11:45 AM", "slotID": 1},
+    {"slot": "12:00 AM -12:45 AM", "slotID": 2},
+    {"slot": "13:00 AM -13:45  AM", "slotID": 3},
+    {"slot": "14:00 AM -14:45  AM", "slotID": 4},
+    {"slot": "15:00 AM -15:45  AM", "slotID": 5},
+    {"slot": "16:00 AM -16:45  AM", "slotID": 6},
+  ];
+ */
+ // final days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
   List<RadioGroup> useList = [];
   void _handleRadioValueChange(int value) {

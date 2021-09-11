@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/mentorhome.dart';
+import 'package:rehnuma_mentor/wrapper.dart';
 
 import '../../Global.dart';
 
@@ -14,8 +14,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(Duration(seconds: 5), () {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => MentorHome()));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => Wrapper()));
     });
   }
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rehnuma_mentor/Screens/Mentor/MentorRegister/m-register1.dart';
+import 'package:rehnuma_mentor/Screens/Mentor/mlogin/mlogin.dart';
+import 'package:rehnuma_mentor/services/auth.dart';
 
 import 'CustomWidgets/Loading.dart';
 import 'Screens/Mentor/MentorHome/mentorhome.dart';
@@ -32,16 +35,16 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AppUser>(context);
+    final user = Provider.of<MentorUser>(context);
 
     // return either the Home or Authenticate widget
     if (loading == true) {
       return Loading();
     } else {
       if (user == null) {
-        return AccountSelection();
+        return MentorLogin();
       } else if (user != null) {
-        // AuthService().setProvider(user, context);
+        //AuthService().setProvider(user, context);
         return MentorHome();
       }
     }

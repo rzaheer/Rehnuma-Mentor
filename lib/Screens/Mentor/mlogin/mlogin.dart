@@ -16,6 +16,7 @@ class _MentorLoginState extends State<MentorLogin> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   String error = '';
+  bool loading = false;
 
   String email = '';
   String password = '';
@@ -129,10 +130,13 @@ class _MentorLoginState extends State<MentorLogin> {
                                       .showerrorToast('Incorrect credentials');
                                 });
                               } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MentorHome()));
+                                setState(() {
+                                  loading = true;
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MentorHome()));
+                                });
                               }
                             }
                           },

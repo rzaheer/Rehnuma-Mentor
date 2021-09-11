@@ -12,12 +12,12 @@ class AuthService {
   final GoogleSignIn googleSignin = new GoogleSignIn();
   final fireStore = FirebaseFirestore.instance;
   final CollectionReference students =
-      FirebaseFirestore.instance.collection("Students");
-  AppUser _userFromFirebaseUser(User user) {
-    return user != null ? AppUser(user.uid) : null;
+      FirebaseFirestore.instance.collection("Mentors");
+  MentorUser _userFromFirebaseUser(User user) {
+    return user != null ? MentorUser(user.uid) : null;
   }
 
-  Stream<AppUser> get user {
+  Stream<MentorUser> get user {
     return _auth
         .authStateChanges()
         //.map((FirebaseUser user) => _userFromFirebaseUser(user));
@@ -90,6 +90,46 @@ class AuthService {
       return null;
     }
   } */
+  Future registerWithEmailAndPassword(
+      MentorModel mentorModel, BuildContext context) async {
+    try {
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
+          email: mentorModel.email, password: mentorModel.password);
+      MentorModel mentorrModel = MentorModel(
+        mentorId: result.user.uid,
+        email: mentorModel.email,
+        fullname: mentorModel.fullname,
+        cnic: mentorModel.cnic,
+        expYears: mentorModel.expYears,
+        fieldOfEducation: mentorModel.fieldOfEducation,
+        jobDesc: mentorModel.jobDesc,
+        password: mentorModel.password,
+        phone: mentorModel.password,
+        educationlevel: mentorModel.educationlevel,
+        gender: mentorModel.gender,
+      );
+      if (result.user != null) {
+        /*  User firebaseUser = result.user; */
+
+        await students
+            .doc(result.user.uid)
+            .set(mentorrModel.toJson())
+            .whenComplete(() {
+          /* Provider.of<UserDetailProvider>(context, listen: false)
+          .setUserDetail(userDetail); */
+        });
+
+        print("new user created hurray");
+        return true;
+      } else {
+        print('fail hugya registration bachu');
+        return null;
+      }
+    } catch (error) {
+      print(error.message);
+      return null;
+    }
+  }
 
   /// README: sign out
   Future signOut(BuildContext context) async {
@@ -129,16 +169,8 @@ class AuthService {
     }
   }
 
-/*   GoogleSignInAccount googleUser = await googleSignIn.signIn();
-GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-final AuthCredential credential = GoogleAuthProvider.getCredential(
-    accessToken: googleAuth.accessToken,
-    idToken: googleAuth.idToken,
-);
-FirebaseUser firebaseUser = (await firebaseAuth.signInWithCredential(credential)).user;*/
-
 //Google Sign in
-  Future gsignIn(mentorModel studentModel, BuildContext context) async {
+  Future gsignIn(MentorModel mentortModel, BuildContext context) async {
     GoogleSignInAccount googleSignInAccount = await googleSignin.signIn();
     GoogleSignInAuthentication gSA = await googleSignInAccount.authentication;
     final AuthCredential credential = GoogleAuthProvider.credential(

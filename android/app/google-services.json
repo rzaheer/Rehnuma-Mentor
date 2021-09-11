@@ -1,49 +1,78 @@
 {
   "project_info": {
-    "project_number": "974203535772",
-    "project_id": "rehnumamentor",
-    "storage_bucket": "rehnumamentor.appspot.com"
+    "project_number": "985401212151",
+    "project_id": "rehnuma-332b4",
+    "storage_bucket": "rehnuma-332b4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:974203535772:android:f71b13b0e7311d98010859",
+        "mobilesdk_app_id": "1:985401212151:android:a52fd26cf8801ab161e7f2",
         "android_client_info": {
-          "package_name": "com.example.rehnuma_mentor"
+          "package_name": "com.application.rehnuma"
         }
       },
       "oauth_client": [
         {
-          "client_id": "974203535772-098cpv3aqjlaq0tql81mk5hg2a2nb9nc.apps.googleusercontent.com",
+          "client_id": "985401212151-688i9qfb3blcihuu2hns4resabm1ah6h.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.rehnuma_mentor",
-            "certificate_hash": "ae6744e26d6e898d8604204049575ac76839203f"
-          }
-        },
-        {
-          "client_id": "974203535772-eii8b7iu7p6ioesco35h3k7t6p8jac8n.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.rehnuma_mentor",
+            "package_name": "com.application.rehnuma",
             "certificate_hash": "b3988f765e778a712b895f5d2e98d3e8ce86953e"
           }
         },
         {
-          "client_id": "974203535772-a3bbicpuhss9a95tfpt8k91aosgdp2lk.apps.googleusercontent.com",
+          "client_id": "985401212151-n3mp5gih75f2jio6t2fmiqi04t9v6jvp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.application.rehnuma",
+            "certificate_hash": "ae6744e26d6e898d8604204049575ac76839203f"
+          }
+        },
+        {
+          "client_id": "985401212151-gr66365o0uir0dqu0osr2km4fmsfstsd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAic8GijBnJTv61FhsXzoMU94Cucrgfj-A"
+          "current_key": "AIzaSyAbpD_EW8t5MY6D6zuDaI2Sit4PaPFy6Ns"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "974203535772-a3bbicpuhss9a95tfpt8k91aosgdp2lk.apps.googleusercontent.com",
+              "client_id": "985401212151-gr66365o0uir0dqu0osr2km4fmsfstsd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985401212151:android:f4533b81e80235c661e7f2",
+        "android_client_info": {
+          "package_name": "com.example.rehnuma_mentor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985401212151-gr66365o0uir0dqu0osr2km4fmsfstsd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbpD_EW8t5MY6D6zuDaI2Sit4PaPFy6Ns"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985401212151-gr66365o0uir0dqu0osr2km4fmsfstsd.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

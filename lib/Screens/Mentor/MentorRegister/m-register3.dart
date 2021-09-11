@@ -1,21 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rehnuma_mentor/CustomWidgets/Custombutton.dart';
-
+import 'package:rehnuma_mentor/CustomWidgets/Customtoast.dart';
+import 'package:rehnuma_mentor/CustomWidgets/Loading.dart';
+import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/mentorhome.dart';
+import 'package:rehnuma_mentor/models/mentorModel.dart';
+import 'package:rehnuma_mentor/services/auth.dart';
+import 'package:rehnuma_mentor/wrapper.dart';
 import '../../../Global.dart';
-import 'm-register5.dart';
 
 class MentorRegister3 extends StatefulWidget {
+  final MentorModel mentorModel;
+  MentorRegister3({this.mentorModel});
   @override
   _MentorRegister3State createState() => _MentorRegister3State();
 }
 
 class _MentorRegister3State extends State<MentorRegister3> {
-  TextEditingController dobController = TextEditingController();
-  final format = DateFormat("dd-MM-yyyy");
-  DateTime selectedDate = DateTime.now();
-  bool maleSelected = true, femaleSelected = false, otherSelected = false;
-  int gender = 2; //1 for female , 2 for male , 3 for other
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  MentorModel currMentorModel;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    currMentorModel = widget.mentorModel;
+  }
+
+  String validatePassword(String value) {
+    Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
+    RegExp regex = new RegExp(pattern);
+    print(value);
+    if (value.isEmpty) {
+      return 'Please enter password';
+    } else {
+      if (!regex.hasMatch(value))
+        return 'Enter valid password';
+      else
+        return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,54 +72,45 @@ class _MentorRegister3State extends State<MentorRegister3> {
                 SizedBox(
                   height: 40,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30),
-                  child: Text('New Password',
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
                 Center(
                   child: SizedBox(
                     height: 45,
                     width: size.width / 1.2,
-                    child: TextField(
+                    child: TextFormField(
+                      controller: passwordController,
                       style: TextStyle(fontSize: 16, color: inputTextColor),
+                      obscureText: true,
                       decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: inputTextColor, width: 1),
-                        ),
+                        disabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
                         filled: true,
-                        fillColor: secondaryColor,
-                        hintText: '********',
+                        fillColor: Colors.white30,
+                        hintText: 'New Password',
                       ),
+                      validator: (value) {
+                        if (validatePassword(value) != null) {
+                          CustomToast().showerrorToast(
+                              "Password must contain numbers, upper case and lower case letters and special characters.");
+                        }
+                      },
                     ),
                   ),
                 ),
                 SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30),
-                  child: Text('Confirm Password',
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
                 Center(
                   child: SizedBox(
                     height: 45,
                     width: size.width / 1.2,
-                    child: TextField(
+                    child: TextFormField(
+                      controller: confirmPasswordController,
                       obscureText: true,
                       style: TextStyle(fontSize: 16, color: inputTextColor),
                       decoration: InputDecoration(
+                        disabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
                         filled: true,
-                        fillColor: secondaryColor,
-                        hintText: '*********',
+                        fillColor: Colors.white30,
+                        hintText: 'Confirm Password',
                       ),
                     ),
                   ),
@@ -106,11 +123,44 @@ class _MentorRegister3State extends State<MentorRegister3> {
                     buttoncolor: buttonColor,
                     height: 50,
                     width: size.width / 2,
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MentorRegister5()));
+                    onPressed: () async {
+                      Loading();
+                      if (_formKey.currentState.validate()) {
+                        if (passwordController.text ==
+                            confirmPasswordController.text) {
+                          print("hogyaaaaaaa validate");
+                          // print(currStudentModel.educationlevel);
+                          print(currMentorModel.educationlevel);
+                          print(currMentorModel.fieldOfEducation);
+
+                          MentorModel _mentorModel = MentorModel(
+                            fullname: currMentorModel.fullname,
+                            gender: currMentorModel.gender,
+                            email: currMentorModel.email,
+                            phone: currMentorModel.phone,
+                            educationlevel: currMentorModel.educationlevel,
+                            fieldOfEducation: currMentorModel.fieldOfEducation,
+                            password: passwordController.text,
+                          );
+                          await AuthService()
+                              .registerWithEmailAndPassword(
+                                  _mentorModel, context)
+                              .then((value) {
+                            if (value == true) {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => Wrapper()),
+                                  (Route<dynamic> route) => false);
+                            } else {
+                              CustomToast()
+                                  .showerrorToast("Registration failed");
+                            }
+                          });
+                        } else {
+                          CustomToast().showerrorToast("Passwords donot match");
+                        }
+                      }
+                      ;
                     },
                     title: 'NEXT',
                   ),

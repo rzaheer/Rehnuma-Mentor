@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     ]);
     return MultiProvider(
       providers: [
-        StreamProvider<AppUser>.value(
+        StreamProvider<MentorUser>.value(
           value: AuthService().user,
         ),
       ],

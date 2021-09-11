@@ -1,4 +1,4 @@
-class AppUser {
-  final String uid;
-  AppUser(this.uid);
+class MentorUser {
+  final String mentorid;
+  MentorUser(this.mentorid);
 }
