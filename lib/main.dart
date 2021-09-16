@@ -26,6 +26,10 @@ class MyApp extends StatelessWidget {
       providers: [
         StreamProvider<MentorUser>.value(
           value: AuthService().user,
+          
+        ),
+        ChangeNotifierProvider(create: (context) => MentorProvider()),
+        
         ),
       ],
       child: MaterialApp(

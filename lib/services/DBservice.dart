@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:rehnuma_mentor/models/mentorModel.dart';
 import 'package:rehnuma_mentor/models/slotModel.dart';
 
 class DBService {
   FirebaseFirestore _db = FirebaseFirestore.instance;
+  CollectionReference studentCollection =
+      FirebaseFirestore.instance.collection('Mentors');
   /* Future<List<UniversityModel>> getData(String uni) async {
     List<UniversityModel> _allUnis = [];
     //url for recommender
@@ -86,6 +89,22 @@ class DBService {
       return _allSlots;
     } catch (e) {
       print("Error in mentor get list: " + e.toString());
+      return null;
+    }
+  }
+
+  Future<MentorModel> getStudentByUid(String uid) async {
+    try {
+      DocumentSnapshot doc = await studentCollection.doc(uid).get();
+      if (doc != null) {
+        MentorModel student = MentorModel.fromJson(doc.data());
+
+        return student;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Error: " + e.toString());
       return null;
     }
   }
