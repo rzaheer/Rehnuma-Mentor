@@ -3,10 +3,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/AvailableSlot/Availableslots.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/DocProfile/DocProfile.dart';
+import 'package:rehnuma_mentor/Screens/Mentor/mlogin/mlogin.dart';
 import 'package:rehnuma_mentor/SharedFunctions.dart';
+import 'package:rehnuma_mentor/services/auth.dart';
 
 import '../../../Global.dart';
-import '../../../MentorProvider.dart';
+import '../../../services/Providers/MentorProvider.dart';
 import 'DrawerItems/About.dart';
 import 'DrawerItems/Accountsettings.dart';
 import 'DrawerItems/Earningdetails.dart';
@@ -66,19 +68,25 @@ class _MentorHomeState extends State<MentorHome> {
             children: [
               UserAccountsDrawerHeader(
                 accountName: Text(
-                  mentorProv.currMentor.fullname,
+                  mentorProv.isCurrMentorAvailable()
+                      ? mentorProv.currMentor.fullname
+                      : "Guest",
                   style: TextStyle(
                     fontSize: 20,
                   ),
                 ),
-                accountEmail: Text(mentorProv.currMentor.email),
+                accountEmail: Text(mentorProv.isCurrMentorAvailable()
+                    ? mentorProv.currMentor.email
+                    : "Guest Email"),
                 currentAccountPicture: CircleAvatar(
                   backgroundColor:
                       Theme.of(context).platform == TargetPlatform.android
                           ? secondaryColor
                           : primaryColor,
                   child: Text(
-                    getInitials(mentorProv.currMentor.fullname),
+                    getInitials(mentorProv.isCurrMentorAvailable()
+                        ? mentorProv.currMentor.fullname
+                        : "Guest"),
                     style: TextStyle(fontSize: 40.0),
                   ),
                 ),
@@ -127,7 +135,16 @@ class _MentorHomeState extends State<MentorHome> {
                   FontAwesomeIcons.signOutAlt,
                 ),
                 title: Text('Log out'),
-                onTap: () {},
+                onTap: () async {
+                  await AuthService().signOut(context).then((success) {
+                    if (success) {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => MentorLogin()),
+                          (Route<dynamic> route) => false);
+                    }
+                  });
+                },
               ),
             ],
           ),

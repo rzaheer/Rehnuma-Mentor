@@ -6,7 +6,7 @@ import 'package:rehnuma_mentor/models/slotModel.dart';
 
 class DBService {
   FirebaseFirestore _db = FirebaseFirestore.instance;
-  CollectionReference studentCollection =
+  CollectionReference mentorCollection =
       FirebaseFirestore.instance.collection('Mentors');
   /* Future<List<UniversityModel>> getData(String uni) async {
     List<UniversityModel> _allUnis = [];
@@ -95,7 +95,7 @@ class DBService {
 
   Future<MentorModel> getMentorByUid(String uid) async {
     try {
-      DocumentSnapshot doc = await studentCollection.doc(uid).get();
+      DocumentSnapshot doc = await mentorCollection.doc(uid).get();
       if (doc != null) {
         MentorModel mentor = MentorModel.fromJson(doc.data());
 

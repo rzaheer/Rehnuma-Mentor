@@ -16,12 +16,6 @@ class _AvailableSlotsState extends State<AvailableSlots> {
       thursSlots = [],
       friSlots = [];
 
-  List<SlotModel> monSlots = [],
-      tuesSlots = [],
-      wedSlots = [],
-      thursSlots = [],
-      friSlots = [];
-
   getAllSlots() async {
     await DBService().getSlotsList().then((slots) {
       if (slots.length != 0) {

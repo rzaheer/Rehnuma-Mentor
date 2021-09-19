@@ -7,7 +7,7 @@ import 'package:rehnuma_mentor/Screens/Splashscreen/splashscreen.dart';
 import 'package:rehnuma_mentor/models/user.dart';
 import 'package:rehnuma_mentor/services/auth.dart';
 
-import 'MentorProvider.dart';
+import 'services/Providers/MentorProvider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
