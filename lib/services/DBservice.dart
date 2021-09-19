@@ -93,13 +93,13 @@ class DBService {
     }
   }
 
-  Future<MentorModel> getStudentByUid(String uid) async {
+  Future<MentorModel> getMentorByUid(String uid) async {
     try {
       DocumentSnapshot doc = await studentCollection.doc(uid).get();
       if (doc != null) {
-        MentorModel student = MentorModel.fromJson(doc.data());
+        MentorModel mentor = MentorModel.fromJson(doc.data());
 
-        return student;
+        return mentor;
       } else {
         return null;
       }

@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/AvailableSlot/Availableslots.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/DocProfile/DocProfile.dart';
+import 'package:rehnuma_mentor/SharedFunctions.dart';
 
 import '../../../Global.dart';
 import '../../../MentorProvider.dart';
@@ -65,19 +66,19 @@ class _MentorHomeState extends State<MentorHome> {
             children: [
               UserAccountsDrawerHeader(
                 accountName: Text(
-                  "Ramsha Zaheer",
+                  mentorProv.currMentor.fullname,
                   style: TextStyle(
                     fontSize: 20,
                   ),
                 ),
-                accountEmail: Text("ramshazaheer@gmail.com"),
+                accountEmail: Text(mentorProv.currMentor.email),
                 currentAccountPicture: CircleAvatar(
                   backgroundColor:
                       Theme.of(context).platform == TargetPlatform.android
                           ? secondaryColor
                           : primaryColor,
                   child: Text(
-                    "R",
+                    getInitials(mentorProv.currMentor.fullname),
                     style: TextStyle(fontSize: 40.0),
                   ),
                 ),
