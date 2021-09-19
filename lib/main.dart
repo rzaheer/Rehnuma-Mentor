@@ -7,6 +7,8 @@ import 'package:rehnuma_mentor/Screens/Splashscreen/splashscreen.dart';
 import 'package:rehnuma_mentor/models/user.dart';
 import 'package:rehnuma_mentor/services/auth.dart';
 
+import 'MentorProvider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -26,6 +28,9 @@ class MyApp extends StatelessWidget {
       providers: [
         StreamProvider<MentorUser>.value(
           value: AuthService().user,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => MentorProvider(),
         ),
       ],
       child: MaterialApp(

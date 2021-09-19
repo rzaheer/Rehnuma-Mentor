@@ -16,6 +16,12 @@ class _AvailableSlotsState extends State<AvailableSlots> {
       thursSlots = [],
       friSlots = [];
 
+  List<SlotModel> monSlots = [],
+      tuesSlots = [],
+      wedSlots = [],
+      thursSlots = [],
+      friSlots = [];
+
   getAllSlots() async {
     await DBService().getSlotsList().then((slots) {
       if (slots.length != 0) {
@@ -131,6 +137,20 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                       fontSize: 14,
                       color: buttonColor,
                       fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1,
+                      mainAxisSpacing: 20,
+                      crossAxisSpacing: 20,
+                    ),
+                    itemCount: 2,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container();
+                    },
+                  ),
                 ),
                 Container(
                   child: Column(
