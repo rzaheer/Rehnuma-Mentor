@@ -11,22 +11,15 @@ import 'package:rehnuma_mentor/services/DBservice.dart';
 import 'package:rehnuma_mentor/services/Providers/MentorProvider.dart';
 
 class AuthService {
+  
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignin = new GoogleSignIn();
   final fireStore = FirebaseFirestore.instance;
   final CollectionReference students =
       FirebaseFirestore.instance.collection("Mentors");
-  MentorUser _userFromFirebaseUser(User user) {
-    return user != null ? MentorUser(user.uid) : null;
-  }
+ 
 
-  Stream<MentorUser> get user {
-    return _auth
-        .authStateChanges()
-        //.map((FirebaseUser user) => _userFromFirebaseUser(user));
-        .map(_userFromFirebaseUser);
-  }
-
+  User get getUser => _auth.currentUser;
   Future<bool> signInEmailPass(
       String email, String password, BuildContext context) async {
     try {
@@ -199,7 +192,7 @@ class AuthService {
       print(firebaseUser.email);
 
       print("User Name:${user.email}");
-      return _userFromFirebaseUser(user);
+      return true;
     } else {
       print('Sign in failed');
     }

@@ -26,6 +26,7 @@ class _MentorLoginState extends State<MentorLogin> {
     var size = MediaQuery.of(context).size;
     final bool isValid = EmailValidator.validate(email);
     return Scaffold(
+      backgroundColor: primaryColor,
       body: Center(
         child: SingleChildScrollView(
           child: Container(

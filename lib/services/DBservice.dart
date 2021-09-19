@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:rehnuma_mentor/CustomWidgets/Customtoast.dart';
 import 'package:rehnuma_mentor/models/mentorModel.dart';
 import 'package:rehnuma_mentor/models/slotModel.dart';
+import 'package:rehnuma_mentor/services/Providers/MentorProvider.dart';
 
 class DBService {
   FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -106,6 +108,31 @@ class DBService {
     } catch (e) {
       print("Error: " + e.toString());
       return null;
+    }
+  }
+
+  Future<bool> addSlot(String mentorId, String slotId) async {
+    try {
+      return await mentorCollection.doc(mentorId).update({
+        'slots': FieldValue.arrayUnion([slotId])
+      }).then((value) {
+        return true;
+      });
+    } catch (e) {
+      CustomToast().showerrorToast(e.toString());
+      return false;
+    }
+  }
+    Future<bool> removeSlot(String mentorId, String slotId) async {
+    try {
+      return await mentorCollection.doc(mentorId).update({
+        'slots': FieldValue.arrayRemove([slotId])
+      }).then((value) {
+        return true;
+      });
+    } catch (e) {
+      CustomToast().showerrorToast(e.toString());
+      return false;
     }
   }
 }

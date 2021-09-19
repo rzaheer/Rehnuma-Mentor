@@ -26,9 +26,7 @@ class MyApp extends StatelessWidget {
     ]);
     return MultiProvider(
       providers: [
-        StreamProvider<MentorUser>.value(
-          value: AuthService().user,
-        ),
+      
         ChangeNotifierProvider(
           create: (context) => MentorProvider(),
         ),
