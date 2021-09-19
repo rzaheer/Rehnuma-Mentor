@@ -10,18 +10,28 @@ class AvailableSlots extends StatefulWidget {
 }
 
 class _AvailableSlotsState extends State<AvailableSlots> {
-  List<SlotModel> slotList = [];
+  List<SlotModel> monSlots = [],
+      tuesSlots = [],
+      wedSlots = [],
+      thursSlots = [],
+      friSlots = [];
 
   getAllSlots() async {
-    await DBService().getSlotsList().then((value) {
-      setState(() {
-        slotList = value;
-      });
+    await DBService().getSlotsList().then((slots) {
+      if (slots.length != 0) {
+        for (int i = 0; i < slots.length; i++) {
+          if (slots[i].day.toLowerCase() == "monday") monSlots.add(slots[i]);
+          if (slots[i].day.toLowerCase() == "tuesday") tuesSlots.add(slots[i]);
+          if (slots[i].day.toLowerCase() == "wednesday") wedSlots.add(slots[i]);
+          if (slots[i].day.toLowerCase() == "thursday")
+            thursSlots.add(slots[i]);
+          if (slots[i].day.toLowerCase() == "friday") friSlots.add(slots[i]);
+        }
+        print("Monday Length :" + monSlots.length.toString());
+        print("Tuesday Length :" + tuesSlots.length.toString());
+        print("Wednesday Length :" + wedSlots.length.toString());
+      }
     });
-    print("Length :" + slotList.length.toString());
-    if (slotList.length != 0) {
-      print(slotList.last.day);
-    }
   }
 
   @override
@@ -44,7 +54,7 @@ class _AvailableSlotsState extends State<AvailableSlots> {
     "14:30-15:00",
   ];
 
- /*  final List<Map> timeSlot = [
+  /*  final List<Map> timeSlot = [
     {"slot": "10:00 AM -10:45 AM", "slotID": 0},
     {"slot": "11:00 AM -11:45 AM", "slotID": 1},
     {"slot": "12:00 AM -12:45 AM", "slotID": 2},
@@ -54,7 +64,7 @@ class _AvailableSlotsState extends State<AvailableSlots> {
     {"slot": "16:00 AM -16:45  AM", "slotID": 6},
   ];
  */
- // final days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  // final days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
   List<RadioGroup> useList = [];
   void _handleRadioValueChange(int value) {
