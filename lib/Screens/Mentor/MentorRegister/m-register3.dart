@@ -47,125 +47,118 @@ class _MentorRegister3State extends State<MentorRegister3> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Container(
-          width: size.width,
-          height: size.height,
-          color: primaryColor,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 70,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30),
-                  child: Text(
-                    'Choose a password for   \nyour account',
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.normal,
-                      color: textColor,
-                    ),
+      body: Form(
+        key: _formKey,
+        child: Container(
+            width: size.width,
+            height: size.height,
+            color: primaryColor,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 70,
                   ),
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                Center(
-                  child: SizedBox(
-                    height: 45,
-                    width: size.width / 1.2,
-                    child: TextFormField(
-                      controller: passwordController,
-                      style: TextStyle(fontSize: 16, color: inputTextColor),
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        disabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        filled: true,
-                        fillColor: Colors.white30,
-                        hintText: 'New Password',
-                      ),
-                      validator: (value) {
-                        if (validatePassword(value) != null) {
-                          CustomToast().showerrorToast(
-                              "Password must contain numbers, upper case and lower case letters and special characters.");
-                        }
-                      },
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Center(
-                  child: SizedBox(
-                    height: 45,
-                    width: size.width / 1.2,
-                    child: TextFormField(
-                      controller: confirmPasswordController,
-                      obscureText: true,
-                      style: TextStyle(fontSize: 16, color: inputTextColor),
-                      decoration: InputDecoration(
-                        disabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        filled: true,
-                        fillColor: Colors.white30,
-                        hintText: 'Confirm Password',
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30),
+                    child: Text(
+                      'Choose a password for   \nyour account',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.normal,
+                        color: textColor,
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 70,
-                ),
-                Center(
-                  child: CustomButton(
-                    buttoncolor: buttonColor,
-                    height: 50,
-                    width: size.width / 2,
-                    onPressed: () async {
-                      Loading();
-                      if (_formKey.currentState.validate()) {
-                        if (passwordController.text ==
-                            confirmPasswordController.text) {
-                          print("hogyaaaaaaa validate");
-                          // print(currStudentModel.educationlevel);
-                          print(currMentorModel.educationlevel);
-                          print(currMentorModel.fieldOfEducation);
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Center(
+                    child: SizedBox(
+                      height: 45,
+                      width: size.width / 1.2,
+                      child: TextFormField(
+                        controller: passwordController,
+                        style: TextStyle(fontSize: 16, color: inputTextColor),
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          disabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white30,
+                          hintText: 'New Password',
+                        ),
+                        validator: (value) {
+                          if (validatePassword(value) != null) {
+                            CustomToast().showerrorToast(
+                                "Password must contain numbers, upper case and lower case letters and special characters.");
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Center(
+                    child: SizedBox(
+                      height: 45,
+                      width: size.width / 1.2,
+                      child: TextFormField(
+                        controller: confirmPasswordController,
+                        obscureText: true,
+                        style: TextStyle(fontSize: 16, color: inputTextColor),
+                        decoration: InputDecoration(
+                          disabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white30,
+                          hintText: 'Confirm Password',
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 70,
+                  ),
+                  Center(
+                    child: CustomButton(
+                      buttoncolor: buttonColor,
+                      height: 50,
+                      width: size.width / 2,
+                      onPressed: () async {
+                        Loading();
+                        if (_formKey.currentState.validate()) {
+                          if (passwordController.text ==
+                              confirmPasswordController.text) {
+                            MentorModel _mentorModel = currMentorModel;
+                            _mentorModel.password = passwordController.text;
 
-                          MentorModel _mentorModel = MentorModel(
-                            fullname: currMentorModel.fullname,
-                            gender: currMentorModel.gender,
-                            email: currMentorModel.email,
-                            phone: currMentorModel.phone,
-                            educationlevel: currMentorModel.educationlevel,
-                            fieldOfEducation: currMentorModel.fieldOfEducation,
-                            password: passwordController.text,
-                          );
-                          await AuthService()
-                              .registerWithEmailAndPassword(
-                                  _mentorModel, context)
-                              .then((value) {
-                            if (value == true) {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => Wrapper()),
-                                  (Route<dynamic> route) => false);
-                            } else {
-                              CustomToast()
-                                  .showerrorToast("Registration failed");
-                            }
-                          });
-                        } else {
-                          CustomToast().showerrorToast("Passwords donot match");
+                            await AuthService()
+                                .registerWithEmailAndPassword(
+                                    _mentorModel, context)
+                                .then((value) {
+                              if (value == true) {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) => Wrapper()),
+                                    (Route<dynamic> route) => false);
+                              } else {
+                                CustomToast()
+                                    .showerrorToast("Registration failed");
+                              }
+                            });
+                          } else {
+                            CustomToast()
+                                .showerrorToast("Passwords donot match");
+                          }
                         }
-                      }
-                      ;
-                    },
-                    title: 'NEXT',
-                  ),
-                )
-              ])),
+                        ;
+                      },
+                      title: 'NEXT',
+                    ),
+                  )
+                ])),
+      ),
     );
   }
 }

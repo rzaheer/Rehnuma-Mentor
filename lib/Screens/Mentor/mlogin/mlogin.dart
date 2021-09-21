@@ -26,6 +26,7 @@ class _MentorLoginState extends State<MentorLogin> {
     var size = MediaQuery.of(context).size;
     final bool isValid = EmailValidator.validate(email);
     return Scaffold(
+      backgroundColor: primaryColor,
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -122,22 +123,20 @@ class _MentorLoginState extends State<MentorLogin> {
                             print(email);
                             print(password);
                             if (_formKey.currentState.validate()) {
-                              dynamic result = await _auth.signInEmailPass(
+                              setState(() {
+                                loading = true;
+                              });
+                              bool result = await _auth.signInEmailPass(
                                   email, password, context);
-                              if (result == null) {
-                                setState(() {
-                                  CustomToast()
-                                      .showerrorToast('Incorrect credentials');
-                                });
-                              } else {
-                                setState(() {
-                                  loading = true;
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => MentorHome()));
-                                });
+                              if (result == true) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MentorHome()));
                               }
+                              setState(() {
+                                loading = false;
+                              });
                             }
                           },
                           child: Text(

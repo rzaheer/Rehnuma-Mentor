@@ -123,19 +123,10 @@ class _MentorRegister2State extends State<MentorRegister2> {
                       width: size.width / 2,
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
-                          print("hogya onn 2");
-                          print(MentorModel);
+                          MentorModel _mentorModel = currMentorModel;
+                          _mentorModel.phone = phoneController.text;
+                          _mentorModel.email = emailController.text;
 
-                          print(currMentorModel.fullname);
-                          print(currMentorModel.gender);
-
-                          MentorModel _mentorModel = MentorModel(
-                            email: emailController.text,
-                            phone: phoneController.text,
-                            fullname: currMentorModel.fullname,
-                            cnic: currMentorModel.cnic,
-                            gender: currMentorModel.gender,
-                          );
                           Navigator.push(
                               context,
                               MaterialPageRoute(

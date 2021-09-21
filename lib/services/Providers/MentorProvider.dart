@@ -7,6 +7,19 @@ class MentorProvider extends ChangeNotifier {
 
   setCurrentMentor(MentorModel mentorModel) {
     currMentor = mentorModel;
+    print("Current mentor has been set to ${currMentor.email} in provider");
     notifyListeners();
+  }
+
+  bool isCurrMentorAvailable() {
+    if (currMentor != null)
+      return true;
+    else
+      return false;
+  }
+
+  clearMentorInProvider() {
+    currMentor = null;
+    
   }
 }

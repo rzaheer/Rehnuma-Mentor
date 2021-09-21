@@ -3,35 +3,38 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:rehnuma_mentor/CustomWidgets/Customtoast.dart';
 import 'package:rehnuma_mentor/models/mentorModel.dart';
 import 'package:rehnuma_mentor/models/user.dart';
+import 'package:rehnuma_mentor/services/DBservice.dart';
+import 'package:rehnuma_mentor/services/Providers/MentorProvider.dart';
 
 class AuthService {
+  
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignin = new GoogleSignIn();
   final fireStore = FirebaseFirestore.instance;
   final CollectionReference students =
       FirebaseFirestore.instance.collection("Mentors");
-  MentorUser _userFromFirebaseUser(User user) {
-    return user != null ? MentorUser(user.uid) : null;
-  }
+ 
 
-  Stream<MentorUser> get user {
-    return _auth
-        .authStateChanges()
-        //.map((FirebaseUser user) => _userFromFirebaseUser(user));
-        .map(_userFromFirebaseUser);
-  }
-
-  Future signInEmailPass(
+  User get getUser => _auth.currentUser;
+  Future<bool> signInEmailPass(
       String email, String password, BuildContext context) async {
     try {
       UserCredential result = await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .whenComplete(() {});
-      CustomToast().showsuccessToast("Login successful");
-      return result;
+      if (result.user != null) {
+        return await DBService().getMentorByUid(result.user.uid).then((mentor) {
+          Provider.of<MentorProvider>(context, listen: false)
+              .setCurrentMentor(mentor);
+          CustomToast().showsuccessToast("Login successful");
+          return true;
+        });
+      } else
+        return false;
     } on FirebaseAuthException catch (error) {
       print("firebase aUTH eXCePTION ayaaaa hai");
       if (error.code == 'user-not-found') {
@@ -46,12 +49,13 @@ class AuthService {
         CustomToast().showerrorToast('Oops, an error has occured');
       }
       print(error.toString());
-      return error.message;
+
+      return false;
     } on PlatformException catch (error) {
       print("Platform Exception");
       CustomToast().showerrorToast('Oops, an error has occured');
       print(error.toString());
-      return error.message;
+      return false;
     }
   }
 
@@ -90,8 +94,12 @@ class AuthService {
       return null;
     }
   } */
-  Future registerWithEmailAndPassword(
+  Future<bool> registerWithEmailAndPassword(
       MentorModel mentorModel, BuildContext context) async {
+    print("Registering....");
+    print("Password " + mentorModel.password);
+    print("Email " + mentorModel.email);
+    print("Phone " + mentorModel.phone);
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: mentorModel.email, password: mentorModel.password);
@@ -111,16 +119,14 @@ class AuthService {
       if (result.user != null) {
         /*  User firebaseUser = result.user; */
 
-        await students
+        return await students
             .doc(result.user.uid)
             .set(mentorrModel.toJson())
-            .whenComplete(() {
-          /* Provider.of<UserDetailProvider>(context, listen: false)
-          .setUserDetail(userDetail); */
+            .then((value) {
+          Provider.of<MentorProvider>(context, listen: false)
+              .setCurrentMentor(mentorModel);
+          return true;
         });
-
-        print("new user created hurray");
-        return true;
       } else {
         print('fail hugya registration bachu');
         return null;
@@ -132,15 +138,16 @@ class AuthService {
   }
 
   /// README: sign out
-  Future signOut(BuildContext context) async {
+  Future<bool> signOut(BuildContext context) async {
     try {
-      await _auth.signOut().whenComplete(() {
-        /* Provider.of<UserDetailProvider>(context, listen: false)
-            .clearUserDetail(); */
-      });
+      return await _auth.signOut().then((value) {
+        Provider.of<MentorProvider>(context, listen: false)
+            .clearMentorInProvider();
+        return true;
+      }).whenComplete(() {});
     } catch (error) {
       print(error.toString());
-      return null;
+      return false;
     }
   }
 
@@ -185,7 +192,7 @@ class AuthService {
       print(firebaseUser.email);
 
       print("User Name:${user.email}");
-      return _userFromFirebaseUser(user);
+      return true;
     } else {
       print('Sign in failed');
     }
