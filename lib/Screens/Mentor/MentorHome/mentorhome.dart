@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/AvailableSlot/Availableslots.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/DocProfile/DocProfile.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/mlogin/mlogin.dart';
+import 'package:rehnuma_mentor/Screens/chatScreens/allChtas.dart';
 import 'package:rehnuma_mentor/SharedFunctions.dart';
+import 'package:rehnuma_mentor/models/mentorModel.dart';
 import 'package:rehnuma_mentor/services/auth.dart';
 
 import '../../../Global.dart';
@@ -38,7 +40,11 @@ class _MentorHomeState extends State<MentorHome> {
 
   @override
   Widget build(BuildContext context) {
+    // var menntor=Provider.of<MentorModel>(context,listen: false);
+    // print(menntor);
+    // print("uuuuuu");
     return Consumer<MentorProvider>(builder: (_, mentorProv, __) {
+      print(mentorProv.currMentor.fullname);
       return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -156,10 +162,15 @@ class _MentorHomeState extends State<MentorHome> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                FlatButton(onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ChatsPage(),
+                ));
+                }, child: Text('msg screen')),
                 SizedBox(height: 50),
                 Container(
                   child: Text(
-                    'Welcome, Dr. Khan',
+                    'Welcome, ${mentorProv.currMentor.fullname}',
                     style: TextStyle(
                         fontSize: 22,
                         color: inputTextColor,
