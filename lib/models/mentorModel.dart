@@ -10,6 +10,7 @@ class MentorModel {
   String jobDesc;
   String expYears;
   String phone;
+  List slots;
 
   MentorModel({
     this.phone,
@@ -23,6 +24,7 @@ class MentorModel {
     this.cnic,
     this.expYears,
     this.jobDesc,
+    this.slots
   });
 
   factory MentorModel.fromJson(Map<String, dynamic> j) => MentorModel(
@@ -36,6 +38,7 @@ class MentorModel {
       fieldOfEducation: j["fieldOfEducation"],
       educationlevel: j["educationlevel"],
       password: j["password"],
+      slots: j["slots"]??[],
       phone: j["phone"]);
 
   Map<String, dynamic> toJson() => {
@@ -50,5 +53,6 @@ class MentorModel {
         "educationlevel": educationlevel,
         "password": password,
         "phone": phone,
+        
       };
 }

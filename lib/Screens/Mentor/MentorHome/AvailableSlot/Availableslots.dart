@@ -21,7 +21,8 @@ class _AvailableSlotsState extends State<AvailableSlots> {
       friSlots = [];
   bool loading = false;
   bool slotChanging = false;
-  List<SlotModel> selectedSlots = [];
+  // List<SlotModel> selectedSlots = [];
+  MentorProvider mentorProvider;
   getAllSlots() async {
     setState(() {
       loading = true;
@@ -62,19 +63,20 @@ class _AvailableSlotsState extends State<AvailableSlots> {
             .addSlot(mentorProvider.currMentor.mentorId, slot.slotId)
             .then((value) {
           if (value) {
-            setState(() {
-              selectedSlots.add(slot);
-            });
+            mentorProvider.addSlots(slot.slotId);
+            setState(() {});
           }
         });
       } else {
+        setState(() {
+          slotChanging = true;
+        });
         await DBService()
             .removeSlot(mentorProvider.currMentor.mentorId, slot.slotId)
             .then((value) {
           if (value) {
-            setState(() {
-              selectedSlots.remove(slot);
-            });
+            mentorProvider.removeSlot(slot.slotId);
+            setState(() {});
           }
         });
       }
@@ -87,6 +89,8 @@ class _AvailableSlotsState extends State<AvailableSlots> {
   @override
   void initState() {
     super.initState();
+    mentorProvider = Provider.of<MentorProvider>(context, listen: false);
+
     getAllSlots();
   }
 
@@ -110,327 +114,400 @@ class _AvailableSlotsState extends State<AvailableSlots> {
         ),
         body: loading
             ? CircularProgressIndicator()
-            : Stack(
-                children: [
-                  Container(
-                    color: secondaryColor,
-                    padding: EdgeInsets.all(10),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            'When are you available?',
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: primaryColor,
-                                fontWeight: FontWeight.w600),
-                          ),
-                          Text('Choose your available slots for this week'),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            ' 1. Monday - 1 JAN 2021',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: buttonColor,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          monSlots.length > 0
-                              ? Container(
-                                  child: GridView.builder(
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      childAspectRatio: 5 / 2,
-                                      mainAxisSpacing: 5,
-                                      crossAxisSpacing: 0,
-                                    ),
-                                    itemCount: monSlots.length,
-                                    itemBuilder: (BuildContext context, int i) {
-                                      return Row(
-                                        children: [
-                                          Checkbox(
-                                            value: true,
-                                            onChanged: (v) {},
-                                          ),
-                                          Text(
-                                            getSlotTimeString(
-                                                end: monSlots[i].endTime,
-                                                start: monSlots[i].endTime),
-                                            style: TextStyle(fontSize: 13),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                )
-                              : Container(
-                                  height: 40,
-                                  width: MediaQuery.of(context).size.width,
-                                  alignment: Alignment.center,
-                                  child:
-                                      Text("No slots available for this day"),
+            : Consumer<MentorProvider>(builder: (_, mentorProv, __) {
+                return Stack(
+                  children: [
+                    Container(
+                      color: secondaryColor,
+                      padding: EdgeInsets.all(10),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'When are you available?',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Text('Choose your available slots for this week'),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ' 1. Monday ',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: buttonColor,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            ' 1. Tuesday - 1 JAN 2021',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: buttonColor,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          tuesSlots.length > 0
-                              ? Container(
-                                  child: GridView.builder(
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      childAspectRatio: 4 / 2,
-                                      mainAxisSpacing: 5,
-                                      crossAxisSpacing: 0,
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            monSlots.length > 0
+                                ? Container(
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 4 / 2,
+                                        mainAxisSpacing: 5,
+                                        crossAxisSpacing: 0,
+                                      ),
+                                      itemCount: monSlots.length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        return Row(
+                                          children: [
+                                            Checkbox(
+                                              value: mentorProv.currMentor.slots
+                                                  .contains(monSlots[i].slotId),
+                                              onChanged: (bool changed) async {
+                                                onCheckboxChanged(
+                                                  changed,
+                                                  monSlots[i],
+                                                );
+                                              },
+                                            ),
+                                            Text(
+                                              getSlotTimeString(
+                                                  end: monSlots[i].endTime,
+                                                  start: monSlots[i].endTime),
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     ),
-                                    itemCount: tuesSlots.length,
-                                    itemBuilder: (BuildContext context, int i) {
-                                      return Row(
-                                        children: [
-                                          Checkbox(
-                                            value: selectedSlots
-                                                .contains(tuesSlots[i]),
-                                            onChanged: (bool changed) async {
-                                              onCheckboxChanged(
-                                                  changed, tuesSlots[i]);
-                                            },
-                                          ),
-                                          Text(
-                                            getSlotTimeString(
-                                                end: tuesSlots[i].endTime,
-                                                start: tuesSlots[i].endTime),
-                                            style: TextStyle(fontSize: 13),
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                  )
+                                : Container(
+                                    height: 40,
+                                    width: MediaQuery.of(context).size.width,
+                                    alignment: Alignment.center,
+                                    child:
+                                        Text("No slots available for this day"),
                                   ),
-                                )
-                              : Container(
-                                  height: 40,
-                                  width: MediaQuery.of(context).size.width,
-                                  alignment: Alignment.center,
-                                  child:
-                                      Text("No slots available for this day"),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ' 2. Tuesday ',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: buttonColor,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                          // Container(
-                          //   child: Column(
-                          //     mainAxisAlignment: MainAxisAlignment.start,
-                          //     children: [
-                          //       Row(
-                          //         children: [
-                          //           Row(
-                          //             children: [
-                          //               Radio(
-                          //                 value: 1,
-                          //                 groupValue: _radioValue,
-                          //                 onChanged: _handleRadioValueChange,
-                          //               ),
-                          //               Text('11:00 -11:30'),
-                          //             ],
-                          //           ),
-                          //           Row(
-                          //             children: [
-                          //               Radio(
-                          //                 value: 2,
-                          //                 groupValue: _radioValue,
-                          //                 onChanged: _handleRadioValueChange,
-                          //               ),
-                          //               Text('12:00 -12:30'),
-                          //             ],
-                          //           ),
-                          //           Row(
-                          //             children: [
-                          //               Radio(
-                          //                 value: 3,
-                          //                 groupValue: _radioValue,
-                          //                 onChanged: _handleRadioValueChange,
-                          //               ),
-                          //               Text('01:00 -01:30'),
-                          //             ],
-                          //           ),
-                          //         ],
-                          //       ),
-                          //       Row(
-                          //         children: [
-                          //           Row(
-                          //             children: [
-                          //               Radio(
-                          //                 value: 4,
-                          //                 groupValue: 1,
-                          //                 onChanged: null,
-                          //               ),
-                          //               Text('11:00 -11:30'),
-                          //             ],
-                          //           ),
-                          //           Row(
-                          //             children: [
-                          //               Radio(
-                          //                 value: 5,
-                          //                 groupValue: _radioValue,
-                          //                 onChanged: _handleRadioValueChange,
-                          //               ),
-                          //               Text('12:00 -12:30'),
-                          //             ],
-                          //           ),
-                          //           Row(
-                          //             children: [
-                          //               Radio(
-                          //                 value: 6,
-                          //                 groupValue: _radioValue,
-                          //                 onChanged: _handleRadioValueChange,
-                          //               ),
-                          //               Text('01:00 -01:30'),
-                          //             ],
-                          //           ),
-                          //         ],
-                          //       ),
-                          //       SizedBox(
-                          //         height: 10,
-                          //       ),
-                          //       Row(
-                          //         mainAxisAlignment: MainAxisAlignment.start,
-                          //         children: [
-                          //           Text(
-                          //             ' 1. Tuesday - 2 JAN 2021',
-                          //             style: TextStyle(
-                          //                 fontSize: 14,
-                          //                 color: buttonColor,
-                          //                 fontWeight: FontWeight.bold),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //       Container(
-                          //         child: Column(
-                          //           mainAxisAlignment: MainAxisAlignment.start,
-                          //           children: [
-                          //             Row(
-                          //               children: [
-                          //                 Row(
-                          //                   children: [
-                          //                     Radio(
-                          //                       value: 1,
-                          //                       groupValue: _radioValue,
-                          //                       onChanged: _handleRadioValueChange,
-                          //                     ),
-                          //                     Text('11:00 -11:30'),
-                          //                   ],
-                          //                 ),
-                          //                 Row(
-                          //                   children: [
-                          //                     Radio(
-                          //                       value: 2,
-                          //                       groupValue: _radioValue,
-                          //                       onChanged: _handleRadioValueChange,
-                          //                     ),
-                          //                     Text('12:00 -12:30'),
-                          //                   ],
-                          //                 ),
-                          //                 Row(
-                          //                   children: [
-                          //                     Radio(
-                          //                       value: 3,
-                          //                       groupValue: _radioValue,
-                          //                       onChanged: _handleRadioValueChange,
-                          //                     ),
-                          //                     Text('01:00 -01:30'),
-                          //                   ],
-                          //                 ),
-                          //               ],
-                          //             ),
-                          //             Row(
-                          //               children: [
-                          //                 Row(
-                          //                   children: [
-                          //                     Radio(
-                          //                       value: 4,
-                          //                       groupValue: 1,
-                          //                       onChanged: null,
-                          //                     ),
-                          //                     Text('11:00 -11:30'),
-                          //                   ],
-                          //                 ),
-                          //                 Row(
-                          //                   children: [
-                          //                     Radio(
-                          //                       value: 5,
-                          //                       groupValue: _radioValue,
-                          //                       onChanged: _handleRadioValueChange,
-                          //                     ),
-                          //                     Text('12:00 -12:30'),
-                          //                   ],
-                          //                 ),
-                          //                 Row(
-                          //                   children: [
-                          //                     Radio(
-                          //                       value: 6,
-                          //                       groupValue: _radioValue,
-                          //                       onChanged: _handleRadioValueChange,
-                          //                     ),
-                          //                     Text('01:00 -01:30'),
-                          //                   ],
-                          //                 ),
-                          //               ],
-                          //             ),
-                          //             /* SizedBox(
-                          //       width: 40,
-                          //       height: 40,
-                          //       child:
-                          //       RadioListTile(
-                          //           title: Text('10:00 - 10:30'),
-                          //           value: 1,
-                          //           groupValue: 1,
-                          //           onChanged: null),
-                          //     ),
-                          //     SizedBox(
-                          //       width: 40,
-                          //       height: 40,
-                          //       child: RadioListTile(
-                          //           title: Text('10:00 - 10:30'),
-                          //           value: 1,
-                          //           groupValue: 1,
-                          //           onChanged: null),
-                          //     ),
-                          //     SizedBox(
-                          //       width: 40,
-                          //       height: 40,
-                          //       child: RadioListTile(
-                          //           title: Text('10:00 - 10:30'),
-                          //           value: 1,
-                          //           groupValue: 1,
-                          //           onChanged: null),
-                          //     ), */
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-                        ],
+                              ],
+                            ),
+                            tuesSlots.length > 0
+                                ? Container(
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 4 / 2,
+                                        mainAxisSpacing: 5,
+                                        crossAxisSpacing: 0,
+                                      ),
+                                      itemCount: tuesSlots.length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        return Row(
+                                          children: [
+                                            Checkbox(
+                                              value: mentorProv.currMentor.slots
+                                                  .contains(
+                                                      tuesSlots[i].slotId),
+                                              onChanged: (bool changed) async {
+                                                onCheckboxChanged(
+                                                    changed, tuesSlots[i]);
+                                              },
+                                            ),
+                                            Text(
+                                              getSlotTimeString(
+                                                  end: tuesSlots[i].endTime,
+                                                  start: tuesSlots[i].endTime),
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : Container(
+                                    height: 40,
+                                    width: MediaQuery.of(context).size.width,
+                                    alignment: Alignment.center,
+                                    child:
+                                        Text("No slots available for this day"),
+                                  ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ' 3. Wednesday ',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: buttonColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            wedSlots.length > 0
+                                ? Container(
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 4 / 2,
+                                        mainAxisSpacing: 5,
+                                        crossAxisSpacing: 0,
+                                      ),
+                                      itemCount: wedSlots.length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        return Row(
+                                          children: [
+                                            Checkbox(
+                                              value: mentorProv.currMentor.slots
+                                                  .contains(wedSlots[i].slotId),
+                                              onChanged: (bool changed) async {
+                                                onCheckboxChanged(
+                                                    changed, wedSlots[i]);
+                                              },
+                                            ),
+                                            Text(
+                                              getSlotTimeString(
+                                                  end: wedSlots[i].endTime,
+                                                  start: wedSlots[i].endTime),
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : Container(
+                                    height: 40,
+                                    width: MediaQuery.of(context).size.width,
+                                    alignment: Alignment.center,
+                                    child:
+                                        Text("No slots available for this day"),
+                                  ),
+                            // Container(
+                            //   child: Column(
+                            //     mainAxisAlignment: MainAxisAlignment.start,
+                            //     children: [
+                            //       Row(
+                            //         children: [
+                            //           Row(
+                            //             children: [
+                            //               Radio(
+                            //                 value: 1,
+                            //                 groupValue: _radioValue,
+                            //                 onChanged: _handleRadioValueChange,
+                            //               ),
+                            //               Text('11:00 -11:30'),
+                            //             ],
+                            //           ),
+                            //           Row(
+                            //             children: [
+                            //               Radio(
+                            //                 value: 2,
+                            //                 groupValue: _radioValue,
+                            //                 onChanged: _handleRadioValueChange,
+                            //               ),
+                            //               Text('12:00 -12:30'),
+                            //             ],
+                            //           ),
+                            //           Row(
+                            //             children: [
+                            //               Radio(
+                            //                 value: 3,
+                            //                 groupValue: _radioValue,
+                            //                 onChanged: _handleRadioValueChange,
+                            //               ),
+                            //               Text('01:00 -01:30'),
+                            //             ],
+                            //           ),
+                            //         ],
+                            //       ),
+                            //       Row(
+                            //         children: [
+                            //           Row(
+                            //             children: [
+                            //               Radio(
+                            //                 value: 4,
+                            //                 groupValue: 1,
+                            //                 onChanged: null,
+                            //               ),
+                            //               Text('11:00 -11:30'),
+                            //             ],
+                            //           ),
+                            //           Row(
+                            //             children: [
+                            //               Radio(
+                            //                 value: 5,
+                            //                 groupValue: _radioValue,
+                            //                 onChanged: _handleRadioValueChange,
+                            //               ),
+                            //               Text('12:00 -12:30'),
+                            //             ],
+                            //           ),
+                            //           Row(
+                            //             children: [
+                            //               Radio(
+                            //                 value: 6,
+                            //                 groupValue: _radioValue,
+                            //                 onChanged: _handleRadioValueChange,
+                            //               ),
+                            //               Text('01:00 -01:30'),
+                            //             ],
+                            //           ),
+                            //         ],
+                            //       ),
+                            //       SizedBox(
+                            //         height: 10,
+                            //       ),
+                            //       Row(
+                            //         mainAxisAlignment: MainAxisAlignment.start,
+                            //         children: [
+                            //           Text(
+                            //             ' 1. Tuesday - 2 JAN 2021',
+                            //             style: TextStyle(
+                            //                 fontSize: 14,
+                            //                 color: buttonColor,
+                            //                 fontWeight: FontWeight.bold),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //       Container(
+                            //         child: Column(
+                            //           mainAxisAlignment: MainAxisAlignment.start,
+                            //           children: [
+                            //             Row(
+                            //               children: [
+                            //                 Row(
+                            //                   children: [
+                            //                     Radio(
+                            //                       value: 1,
+                            //                       groupValue: _radioValue,
+                            //                       onChanged: _handleRadioValueChange,
+                            //                     ),
+                            //                     Text('11:00 -11:30'),
+                            //                   ],
+                            //                 ),
+                            //                 Row(
+                            //                   children: [
+                            //                     Radio(
+                            //                       value: 2,
+                            //                       groupValue: _radioValue,
+                            //                       onChanged: _handleRadioValueChange,
+                            //                     ),
+                            //                     Text('12:00 -12:30'),
+                            //                   ],
+                            //                 ),
+                            //                 Row(
+                            //                   children: [
+                            //                     Radio(
+                            //                       value: 3,
+                            //                       groupValue: _radioValue,
+                            //                       onChanged: _handleRadioValueChange,
+                            //                     ),
+                            //                     Text('01:00 -01:30'),
+                            //                   ],
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //             Row(
+                            //               children: [
+                            //                 Row(
+                            //                   children: [
+                            //                     Radio(
+                            //                       value: 4,
+                            //                       groupValue: 1,
+                            //                       onChanged: null,
+                            //                     ),
+                            //                     Text('11:00 -11:30'),
+                            //                   ],
+                            //                 ),
+                            //                 Row(
+                            //                   children: [
+                            //                     Radio(
+                            //                       value: 5,
+                            //                       groupValue: _radioValue,
+                            //                       onChanged: _handleRadioValueChange,
+                            //                     ),
+                            //                     Text('12:00 -12:30'),
+                            //                   ],
+                            //                 ),
+                            //                 Row(
+                            //                   children: [
+                            //                     Radio(
+                            //                       value: 6,
+                            //                       groupValue: _radioValue,
+                            //                       onChanged: _handleRadioValueChange,
+                            //                     ),
+                            //                     Text('01:00 -01:30'),
+                            //                   ],
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //             /* SizedBox(
+                            //       width: 40,
+                            //       height: 40,
+                            //       child:
+                            //       RadioListTile(
+                            //           title: Text('10:00 - 10:30'),
+                            //           value: 1,
+                            //           groupValue: 1,
+                            //           onChanged: null),
+                            //     ),
+                            //     SizedBox(
+                            //       width: 40,
+                            //       height: 40,
+                            //       child: RadioListTile(
+                            //           title: Text('10:00 - 10:30'),
+                            //           value: 1,
+                            //           groupValue: 1,
+                            //           onChanged: null),
+                            //     ),
+                            //     SizedBox(
+                            //       width: 40,
+                            //       height: 40,
+                            //       child: RadioListTile(
+                            //           title: Text('10:00 - 10:30'),
+                            //           value: 1,
+                            //           groupValue: 1,
+                            //           onChanged: null),
+                            //     ), */
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  slotChanging ? CustomLoading() : Container()
-                ],
-              ));
+                    slotChanging ? CustomLoading() : Container()
+                  ],
+                );
+              }));
   }
 }
 
