@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:rehnuma_mentor/CustomWidgets/Customtoast.dart';
+import 'package:rehnuma_mentor/models/AppointmentModel.dart';
 import 'package:rehnuma_mentor/models/mentorModel.dart';
 import 'package:rehnuma_mentor/models/slotModel.dart';
 import 'package:rehnuma_mentor/services/Providers/MentorProvider.dart';
@@ -10,6 +11,8 @@ class DBService {
   FirebaseFirestore _db = FirebaseFirestore.instance;
   CollectionReference mentorCollection =
       FirebaseFirestore.instance.collection('Mentors');
+  CollectionReference appointmentCol =
+      FirebaseFirestore.instance.collection('Appointments');
   /* Future<List<UniversityModel>> getData(String uni) async {
     List<UniversityModel> _allUnis = [];
     //url for recommender
@@ -123,7 +126,8 @@ class DBService {
       return false;
     }
   }
-    Future<bool> removeSlot(String mentorId, String slotId) async {
+
+  Future<bool> removeSlot(String mentorId, String slotId) async {
     try {
       return await mentorCollection.doc(mentorId).update({
         'slots': FieldValue.arrayRemove([slotId])
@@ -133,6 +137,54 @@ class DBService {
     } catch (e) {
       CustomToast().showerrorToast(e.toString());
       return false;
+    }
+  }
+
+  Future<List<AppointmentModel>> getScheduledAppointments(
+      String mentorId) async {
+    List<AppointmentModel> allAppointments = [];
+    try {
+      return await appointmentCol
+          .where("mentorId", isEqualTo: mentorId)
+          .where("isCompleted", isEqualTo: false)
+          .where("paymentReceived", isEqualTo: true)
+          .get()
+          .then((QuerySnapshot qs) {
+        if (qs.docs.isNotEmpty) {
+          print("object: " + qs.docs.length.toString());
+          qs.docs.forEach((app) {
+            allAppointments.add(AppointmentModel.fromJson(app.data()));
+          });
+        }
+        return allAppointments;
+      });
+    } catch (e) {
+      print("Error: " + e.toString());
+      CustomToast().showerrorToast(e.toString());
+      return null;
+    }
+  }
+
+  Future<List<AppointmentModel>> getPastAppointments(String studentId) async {
+    List<AppointmentModel> allAppointments = [];
+    try {
+      return await appointmentCol
+          .where("studentId", isEqualTo: studentId)
+          .where("isCompleted", isEqualTo: true)
+          .where("paymentReceived", isEqualTo: true)
+          .get()
+          .then((QuerySnapshot qs) {
+        if (qs.docs.isNotEmpty) {
+          qs.docs.forEach((app) {
+            allAppointments.add(AppointmentModel.fromJson(app.data()));
+          });
+        }
+        return allAppointments;
+      });
+    } catch (e) {
+      print("Error: " + e.toString());
+      CustomToast().showerrorToast(e.toString());
+      return null;
     }
   }
 }

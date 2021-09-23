@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rehnuma_mentor/CustomWidgets/Appointmentcard%20copy.dart';
 import 'package:rehnuma_mentor/CustomWidgets/Appointmentcard.dart';
+import 'package:rehnuma_mentor/models/AppointmentModel.dart';
+import 'package:rehnuma_mentor/services/DBservice.dart';
+import 'package:rehnuma_mentor/services/Providers/MentorProvider.dart';
 
 import '../../../../Global.dart';
+import 'noappointments.dart';
 
 class MentorScheduledAppointments extends StatefulWidget {
   @override
@@ -11,6 +17,31 @@ class MentorScheduledAppointments extends StatefulWidget {
 
 class _MentorScheduledAppointmentsState
     extends State<MentorScheduledAppointments> {
+  MentorProvider mentorProvider;
+  DBService _db = DBService();
+  List<AppointmentModel> appointments = [];
+
+  Future getScheduledAppointments() async {
+    await _db
+        .getScheduledAppointments(mentorProvider.currMentor.mentorId)
+        .then((value) {
+      if (value != null) {
+        print(value);
+        setState(() {
+          appointments.addAll(value);
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    mentorProvider = Provider.of<MentorProvider>(context, listen: false);
+    getScheduledAppointments();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,38 +66,17 @@ class _MentorScheduledAppointmentsState
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomCard(
-                  docname: 'Ms. Kinza',
-                  dateDay: '12th Jan 2020',
-                  time: '11:00 AM'),
-              SizedBox(
-                height: 10,
-              ),
-              CustomCard(
-                  docname: 'Ms. Ramsha',
-                  dateDay: '13th Jan 2020',
-                  time: '11:00 AM'),
-              SizedBox(
-                height: 10,
-              ),
-              CustomCard(
-                  docname: 'Ms. Urooj',
-                  dateDay: '14th Jan 2020',
-                  time: '11:00 AM'),
-              SizedBox(
-                height: 10,
-              ),
-              CustomCard(
-                  docname: 'Mr. Ammar',
-                  dateDay: '15th Jan 2020',
-                  time: '11:00 AM'),
-              SizedBox(
-                height: 10,
-              ),
-              CustomCard(
-                  docname: 'Mr. Omama',
-                  dateDay: '16th Jan 2020',
-                  time: '11:00 AM'),
+              appointments.length == 0
+                  ? NoAppointmentsFound()
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      primary: false,
+                      itemCount: appointments.length,
+                      itemBuilder: (_, i) {
+                        return AppointmentCard(
+                          appointmentModel: appointments[i],
+                        );
+                      })
             ],
           ),
         ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rehnuma_mentor/CustomWidgets/CustomLoading.dart';
+import 'package:rehnuma_mentor/CustomWidgets/Custombutton.dart';
+import 'package:rehnuma_mentor/CustomWidgets/Loading.dart';
+import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/mentorhome.dart';
 import 'package:rehnuma_mentor/SharedFunctions.dart';
 import 'package:rehnuma_mentor/models/slotModel.dart';
 import 'package:rehnuma_mentor/services/DBservice.dart';
@@ -44,6 +47,8 @@ class _AvailableSlotsState extends State<AvailableSlots> {
         print("Monday Length :" + monSlots.length.toString());
         print("Tuesday Length :" + tuesSlots.length.toString());
         print("Wednesday Length :" + wedSlots.length.toString());
+        print("Thursday Length :" + thursSlots.length.toString());
+        print("friday Length :" + friSlots.length.toString());
       }
     });
     setState(() {
@@ -113,7 +118,7 @@ class _AvailableSlotsState extends State<AvailableSlots> {
           ),
         ),
         body: loading
-            ? CircularProgressIndicator()
+            ? Loading()
             : Consumer<MentorProvider>(builder: (_, mentorProv, __) {
                 return Stack(
                   children: [
@@ -136,13 +141,16 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                   fontWeight: FontWeight.w600),
                             ),
                             Text('Choose your available slots for this week'),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  ' 1. Monday ',
+                                  '1. Monday (September 27,2021)',
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 17,
                                       color: buttonColor,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -158,9 +166,9 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                       primary: false,
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        childAspectRatio: 4 / 2,
-                                        mainAxisSpacing: 5,
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 8 / 2,
+                                        mainAxisSpacing: 0,
                                         crossAxisSpacing: 0,
                                       ),
                                       itemCount: monSlots.length,
@@ -182,7 +190,7 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                               getSlotTimeString(
                                                   end: monSlots[i].endTime,
                                                   start: monSlots[i].startTime),
-                                              style: TextStyle(fontSize: 13),
+                                              style: TextStyle(fontSize: 16),
                                             ),
                                           ],
                                         );
@@ -200,9 +208,9 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  ' 2. Tuesday ',
+                                  ' 2. Tuesday (September 28, 2021) ',
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 17,
                                       color: buttonColor,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -215,9 +223,9 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                       primary: false,
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        childAspectRatio: 4 / 2,
-                                        mainAxisSpacing: 5,
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 8 / 2,
+                                        mainAxisSpacing: 0,
                                         crossAxisSpacing: 0,
                                       ),
                                       itemCount: tuesSlots.length,
@@ -239,7 +247,7 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                                   end: tuesSlots[i].endTime,
                                                   start:
                                                       tuesSlots[i].startTime),
-                                              style: TextStyle(fontSize: 13),
+                                              style: TextStyle(fontSize: 16),
                                             ),
                                           ],
                                         );
@@ -257,9 +265,9 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  ' 3. Wednesday ',
+                                  ' 3. Wednesday (September 29,2021)',
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 17,
                                       color: buttonColor,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -272,7 +280,7 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                       primary: false,
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
+                                        crossAxisCount: 2,
                                         childAspectRatio: 4 / 2,
                                         mainAxisSpacing: 5,
                                         crossAxisSpacing: 0,
@@ -294,7 +302,7 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                               getSlotTimeString(
                                                   end: wedSlots[i].endTime,
                                                   start: wedSlots[i].startTime),
-                                              style: TextStyle(fontSize: 13),
+                                              style: TextStyle(fontSize: 16),
                                             ),
                                           ],
                                         );
@@ -308,6 +316,138 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                     child:
                                         Text("No slots available for this day"),
                                   ),
+                            //Thursday
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ' 4. Thursday (September 30,2021)',
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      color: buttonColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            thursSlots.length > 0
+                                ? Container(
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 4 / 2,
+                                        mainAxisSpacing: 5,
+                                        crossAxisSpacing: 0,
+                                      ),
+                                      itemCount: thursSlots.length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        return Row(
+                                          children: [
+                                            Checkbox(
+                                              value: mentorProv.currMentor.slots
+                                                  .contains(
+                                                      thursSlots[i].slotId),
+                                              onChanged: (bool changed) async {
+                                                onCheckboxChanged(
+                                                    changed, thursSlots[i]);
+                                              },
+                                            ),
+                                            Text(
+                                              getSlotTimeString(
+                                                  end: thursSlots[i].endTime,
+                                                  start:
+                                                      thursSlots[i].startTime),
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : Container(
+                                    height: 40,
+                                    width: MediaQuery.of(context).size.width,
+                                    alignment: Alignment.center,
+                                    child:
+                                        Text("No slots available for this day"),
+                                  ),
+                            //Friday
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ' 5. Friday (October 01,2021)',
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      color: buttonColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            friSlots.length > 0
+                                ? Container(
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 4 / 2,
+                                        mainAxisSpacing: 5,
+                                        crossAxisSpacing: 0,
+                                      ),
+                                      itemCount: friSlots.length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        return Row(
+                                          children: [
+                                            Checkbox(
+                                              value: mentorProv.currMentor.slots
+                                                  .contains(friSlots[i].slotId),
+                                              onChanged: (bool changed) async {
+                                                onCheckboxChanged(
+                                                    changed, friSlots[i]);
+                                              },
+                                            ),
+                                            Text(
+                                              getSlotTimeString(
+                                                  end: friSlots[i].endTime,
+                                                  start: friSlots[i].startTime),
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : Container(
+                                    height: 40,
+                                    width: MediaQuery.of(context).size.width,
+                                    alignment: Alignment.center,
+                                    child:
+                                        Text("No slots available for this day"),
+                                  ),
+
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Center(
+                              child: CustomButton(
+                                  title: 'Update',
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                MentorHome()));
+                                  },
+                                  height: 40,
+                                  width: 120,
+                                  buttoncolor: Colors.green),
+                            )
+
                             // Container(
                             //   child: Column(
                             //     mainAxisAlignment: MainAxisAlignment.start,
