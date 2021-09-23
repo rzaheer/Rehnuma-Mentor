@@ -1,6 +1,8 @@
 import 'package:rehnuma_mentor/Global.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/Mentorscheduledapp.dart/appointmentDetails.dart';
+import 'package:rehnuma_mentor/models/appointmentModel.dart';
 
 class CustomCard extends StatelessWidget {
   const CustomCard({
@@ -8,10 +10,12 @@ class CustomCard extends StatelessWidget {
     @required this.docname,
     @required this.dateDay,
     @required this.time,
+    @required this.appModel
   }) : super(key: key);
   final String docname;
   final String dateDay;
   final String time;
+  final AppointmentModel appModel;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +84,7 @@ class CustomCard extends StatelessWidget {
                 width: 20,
               ),
               Text(
-                dateDay,
+                "starting Time: $dateDay",
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 15,
@@ -106,7 +110,7 @@ class CustomCard extends StatelessWidget {
                 width: 20,
               ),
               Text(
-                time,
+                "ending Time: $time",
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 15,
@@ -138,13 +142,13 @@ class CustomCard extends StatelessWidget {
                   elevation: 6,
                   color: primaryColor,
                   // padding: const EdgeInsets.all(8.0),
-                  onPressed: () {},
-                  /*   {
+                  onPressed: () 
+                   {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AppointmentDetails()));
-                  }, */
+                            builder: (context) => AppointmentDetails(appointment: appModel,)));
+                  },
                   child: Text(
                     'View details',
                     style: TextStyle(
