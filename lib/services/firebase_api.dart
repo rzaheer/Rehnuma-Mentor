@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rehnuma_mentor/CustomWidgets/Customtoast.dart';
+import 'package:rehnuma_mentor/models/appointmentModel.dart';
 import 'package:rehnuma_mentor/models/mentorModel.dart';
 import 'package:rehnuma_mentor/models/msgModels.dart';
 import 'package:rehnuma_mentor/models/studentModel.dart';
@@ -52,6 +54,71 @@ class FirebaseApi {
   } 
     
   }
+  Future<List<AppointmentModel>> getActiveAppointments(String mentorId) async {
+    List<AppointmentModel> allAppointments = [];
+    try {
+      CollectionReference appointmentCol =
+      FirebaseFirestore.instance.collection('Appointments');
+      return await appointmentCol
+          .where("mentorId", isEqualTo: mentorId)
+          .where("isCompleted", isEqualTo: false)
+          .where("paymentReceived", isEqualTo: true)
+          .get()
+          .then((QuerySnapshot qs) {
+        if (qs.docs.isNotEmpty) {
+          qs.docs.forEach((app) {
+            allAppointments.add(AppointmentModel.fromJson(app.data()));
+          });
+        }
+        return allAppointments;
+      });
+    } catch (e) {
+      print("Error: " + e.toString());
+      CustomToast().showerrorToast(e.toString());
+      return null;
+    }
+  }
+  Future<List<AppointmentModel>> getPastAppointments(String mentorId) async {
+    List<AppointmentModel> allAppointments = [];
+    try {
+      CollectionReference appointmentCol =
+      FirebaseFirestore.instance.collection('Appointments');
+      return await appointmentCol
+          .where("mentorId", isEqualTo: mentorId)
+          .where("isCompleted", isEqualTo: true)
+          .where("paymentReceived", isEqualTo: true)
+          .get()
+          .then((QuerySnapshot qs) {
+        if (qs.docs.isNotEmpty) {
+          qs.docs.forEach((app) {
+            allAppointments.add(AppointmentModel.fromJson(app.data()));
+          });
+        }
+        return allAppointments;
+      });
+    } catch (e) {
+      print("Error: " + e.toString());
+      CustomToast().showerrorToast(e.toString());
+      return null;
+    }
+  }
+  Future<bool> updateChatActiveStatusToTrue(AppointmentModel aptM,bool status) async {
+    try {
+      CollectionReference appointmentCol =
+      FirebaseFirestore.instance.collection('Appointments');
+      return await appointmentCol
+          .doc(aptM.appointmentId)
+          .update({"activateChat": status}).then((value) {
+        CustomToast()
+            .showsuccessToast("You have Activated Chat for ${aptM.studentName}");
+        return true;
+      });
+    } catch (e) {
+      print(e.toString());
+      CustomToast().showerrorToast(e.toString());
+      return false;
+    }
+  }
   //  
   static Stream<List<Message>> getMessages(String messageId) =>
       FirebaseFirestore.instance
@@ -60,19 +127,5 @@ class FirebaseApi {
           .snapshots()
           .transform(transformer(Message.fromJson));
 
-  // static Future addRandomUsers(List<User> users) async {
-  //   final refUsers = FirebaseFirestore.instance.collection('users');
-
-  //   final allUsers = await refUsers.get();
-  //   if (allUsers.size != 0) {
-  //     return;
-  //   } else {
-  //     for (final user in users) {
-  //       final userDoc = refUsers.doc();
-  //       final newUser = user.copyWith(idUser: userDoc.id);
-
-  //       await userDoc.set(newUser.toJson());
-  //     }
-  //   }
-  // }
+  
 }
