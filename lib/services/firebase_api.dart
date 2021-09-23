@@ -78,6 +78,30 @@ class FirebaseApi {
       return null;
     }
   }
+  Future<List<AppointmentModel>> getPastAppointments(String mentorId) async {
+    List<AppointmentModel> allAppointments = [];
+    try {
+      CollectionReference appointmentCol =
+      FirebaseFirestore.instance.collection('Appointments');
+      return await appointmentCol
+          .where("mentorId", isEqualTo: mentorId)
+          .where("isCompleted", isEqualTo: true)
+          .where("paymentReceived", isEqualTo: true)
+          .get()
+          .then((QuerySnapshot qs) {
+        if (qs.docs.isNotEmpty) {
+          qs.docs.forEach((app) {
+            allAppointments.add(AppointmentModel.fromJson(app.data()));
+          });
+        }
+        return allAppointments;
+      });
+    } catch (e) {
+      print("Error: " + e.toString());
+      CustomToast().showerrorToast(e.toString());
+      return null;
+    }
+  }
   Future<bool> updateChatActiveStatusToTrue(AppointmentModel aptM,bool status) async {
     try {
       CollectionReference appointmentCol =

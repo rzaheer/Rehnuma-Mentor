@@ -162,11 +162,11 @@ class _MentorHomeState extends State<MentorHome> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FlatButton(onPressed: (){
-                  Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ChatsPage(),
-                ));
-                }, child: Text('msg screen')),
+                // FlatButton(onPressed: (){
+                //   Navigator.of(context).push(MaterialPageRoute(
+                //   builder: (context) => ChatsPage(),
+                // ));
+                // }, child: Text('msg screen')),
                 SizedBox(height: 50),
                 Container(
                   child: Text(
