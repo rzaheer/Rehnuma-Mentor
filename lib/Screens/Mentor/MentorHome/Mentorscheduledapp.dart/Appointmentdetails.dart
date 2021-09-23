@@ -38,6 +38,8 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
 
   AppointmentModel currAppointment;
 
+  var isPast;
+
   Future getScheduledAppointments() async {
     await _db
         .getScheduledAppointments(mentorProvider.currMentor.mentorId)
@@ -59,6 +61,7 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
     getScheduledAppointments();
     setState(() {
       currAppointment = widget.appointmentModel;
+      isPast = widget.isPast;
     });
   }
 
@@ -106,7 +109,7 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
                         fontSize: 18,
                       ),
                     ),
-                    widget.appointmentModel.isCompleted == true
+                    isPast == true
                         ? Text(
                             "COMPLETED",
                             style: TextStyle(color: Colors.red, fontSize: 23),
