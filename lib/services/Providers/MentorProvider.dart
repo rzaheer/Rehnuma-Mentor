@@ -18,8 +18,19 @@ class MentorProvider extends ChangeNotifier {
       return false;
   }
 
+  addSlots(String slotId) {
+    if (!currMentor.slots.contains(slotId)) currMentor.slots.add(slotId);
+
+    notifyListeners();
+  }
+
+  removeSlot(String slotId) {
+    if (currMentor.slots.contains(slotId)) currMentor.slots.remove(slotId);
+
+    notifyListeners();
+  }
+
   clearMentorInProvider() {
     currMentor = null;
-    
   }
 }

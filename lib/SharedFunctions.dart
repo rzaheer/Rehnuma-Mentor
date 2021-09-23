@@ -13,6 +13,7 @@ String getSlotTimeString({DateTime start, DateTime end}) {
   String concat = startTimeString + "-" + endTimeString;
   return concat;
 }
+
 sizeWidth(BuildContext context) {
   double screenWidth = MediaQuery.of(context).size.width;
   return screenWidth;
@@ -21,4 +22,19 @@ sizeWidth(BuildContext context) {
 sizeHeight(BuildContext context) {
   double screenHeight = MediaQuery.of(context).size.height;
   return screenHeight;
+}
+
+String formatTime24Hr(DateTime dateTime) {
+  String formattedTime = DateFormat('HH:mm').format(dateTime);
+  return formattedTime;
+}
+
+String formatTime12Hr(DateTime dateTime) {
+  String formattedTime = DateFormat('hh:mm a').format(dateTime);
+  return formattedTime;
+}
+
+String formatDate(DateTime dateTime) {
+  String formattedTime = DateFormat("yMMMEd").format(dateTime);
+  return formattedTime;
 }

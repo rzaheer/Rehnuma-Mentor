@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/AvailableSlot/Availableslots.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/DocProfile/DocProfile.dart';
+import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/notifs.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/mlogin/mlogin.dart';
 import 'package:rehnuma_mentor/Screens/chatScreens/allChtas.dart';
 import 'package:rehnuma_mentor/SharedFunctions.dart';
@@ -28,9 +29,9 @@ class _MentorHomeState extends State<MentorHome> {
   final List<Map> items = [
     {
       "img": "assets/images/scheduleapp.png",
-      "name": "Scheduled Appointments",
+      "name": "Your Appointments",
     },
-    {"img": "assets/images/pastapp.png", "name": "Past Appointments"},
+    {"img": "assets/images/msg.jpg", "name": "Messages"},
     {"img": "assets/images/user.png", "name": "My Profile"},
     {
       "img": "assets/images/addappointment.png",
@@ -66,7 +67,10 @@ class _MentorHomeState extends State<MentorHome> {
                   Icons.notifications,
                   color: secondaryColor,
                 ),
-                onPressed: null)
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => Notifications()));
+                })
           ],
         ),
         drawer: Drawer(
@@ -103,14 +107,6 @@ class _MentorHomeState extends State<MentorHome> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => Accountsetting()));
-                },
-              ),
-              ListTile(
-                leading: FaIcon(FontAwesomeIcons.moneyBill),
-                title: Text('Earning Details'),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Earningdetails()));
                 },
               ),
               ListTile(
@@ -162,11 +158,7 @@ class _MentorHomeState extends State<MentorHome> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // FlatButton(onPressed: (){
-                //   Navigator.of(context).push(MaterialPageRoute(
-                //   builder: (context) => ChatsPage(),
-                // ));
-                // }, child: Text('msg screen')),
+
                 SizedBox(height: 50),
                 Container(
                   child: Text(
@@ -207,8 +199,7 @@ class _MentorHomeState extends State<MentorHome> {
                                   } else if (index == 1) {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                MentorPastAppointments()));
+                                            builder: (context) => ChatsPage()));
                                   } else if (index == 2) {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
