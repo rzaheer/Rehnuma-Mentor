@@ -181,7 +181,7 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                             Text(
                                               getSlotTimeString(
                                                   end: monSlots[i].endTime,
-                                                  start: monSlots[i].endTime),
+                                                  start: monSlots[i].startTime),
                                               style: TextStyle(fontSize: 13),
                                             ),
                                           ],
@@ -237,7 +237,8 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                             Text(
                                               getSlotTimeString(
                                                   end: tuesSlots[i].endTime,
-                                                  start: tuesSlots[i].endTime),
+                                                  start:
+                                                      tuesSlots[i].startTime),
                                               style: TextStyle(fontSize: 13),
                                             ),
                                           ],
@@ -292,7 +293,7 @@ class _AvailableSlotsState extends State<AvailableSlots> {
                                             Text(
                                               getSlotTimeString(
                                                   end: wedSlots[i].endTime,
-                                                  start: wedSlots[i].endTime),
+                                                  start: wedSlots[i].startTime),
                                               style: TextStyle(fontSize: 13),
                                             ),
                                           ],

@@ -30,43 +30,24 @@ class _MentorPastAppointmentsState extends State<MentorPastAppointments> {
           padding: EdgeInsets.all(10),
           color: secondaryColor,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CustomCard(
-                  docname: 'Ms. Kinza',
-                  dateDay: '12th Jan 2020',
-                  time: '11:00 AM'),
-              SizedBox(
-                height: 10,
-              ),
-              CustomCard(
-                  docname: 'Ms. Ramsha',
-                  dateDay: '13th Jan 2020',
-                  time: '11:00 AM'),
-              SizedBox(
-                height: 10,
-              ),
-              CustomCard(
-                  docname: 'Ms. Urooj',
-                  dateDay: '14th Jan 2020',
-                  time: '11:00 AM'),
-              SizedBox(
-                height: 10,
-              ),
-              CustomCard(
-                  docname: 'Mr. Ammar',
-                  dateDay: '15th Jan 2020',
-                  time: '11:00 AM'),
-              SizedBox(
-                height: 10,
-              ),
-              CustomCard(
-                  docname: 'Mr. Omama',
-                  dateDay: '16th Jan 2020',
-                  time: '11:00 AM'),
-            ],
-          ),
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomCard(
+                    docname: 'Ms. Kinza',
+                    dateDay: '12th Jan 2020',
+                    time: '11:00 AM'),
+                SizedBox(
+                  height: 10,
+                ),
+                CustomCard(
+                    docname: 'Ms. Ramsha',
+                    dateDay: '13th Jan 2020',
+                    time: '11:00 AM'),
+                SizedBox(
+                  height: 10,
+                ),
+              ]),
         ),
       ),
     );

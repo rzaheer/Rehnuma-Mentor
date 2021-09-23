@@ -30,7 +30,7 @@ class _MentorHomeState extends State<MentorHome> {
       "img": "assets/images/scheduleapp.png",
       "name": "Scheduled Appointments",
     },
-    {"img": "assets/images/pastapp.png", "name": "Past Appointments"},
+    {"img": "assets/images/pastapp.png", "name": "Messages"},
     {"img": "assets/images/user.png", "name": "My Profile"},
     {
       "img": "assets/images/addappointment.png",
@@ -162,11 +162,13 @@ class _MentorHomeState extends State<MentorHome> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FlatButton(onPressed: (){
-                  Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ChatsPage(),
-                ));
-                }, child: Text('msg screen')),
+                /* FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ChatsPage(),
+                      ));
+                    },
+                    child: Text('msg screen')), */
                 SizedBox(height: 50),
                 Container(
                   child: Text(
@@ -207,8 +209,7 @@ class _MentorHomeState extends State<MentorHome> {
                                   } else if (index == 1) {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                MentorPastAppointments()));
+                                            builder: (context) => ChatsPage()));
                                   } else if (index == 2) {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
