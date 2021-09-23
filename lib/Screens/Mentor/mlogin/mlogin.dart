@@ -184,7 +184,7 @@ class _MentorLoginState extends State<MentorLogin> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Center(
+                 /*  Center(
                     child: SizedBox(
                       height: 40,
                       width: size.width / 2,
@@ -217,7 +217,7 @@ class _MentorLoginState extends State<MentorLogin> {
                         ),
                       ),
                     ),
-                  ),
+                  ), */
                   SizedBox(
                     height: 10,
                   ),

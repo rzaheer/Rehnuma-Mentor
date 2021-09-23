@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rehnuma_mentor/CustomWidgets/Appointmentcard.dart';
 import 'package:rehnuma_mentor/Screens/Mentor/MentorHome/Mentorscheduledapp.dart/noAppointmentFound.dart';
-import 'package:rehnuma_mentor/models/appointmentModel.dart';
 import 'package:rehnuma_mentor/services/Providers/MentorProvider.dart';
 import 'package:rehnuma_mentor/services/firebase_api.dart';
 import 'package:rehnuma_mentor/CustomWidgets/Appointmentcard%20copy.dart';
-import 'package:rehnuma_mentor/CustomWidgets/Appointmentcard.dart';
-import 'package:rehnuma_mentor/models/AppointmentModel.dart';
-import 'package:rehnuma_mentor/services/DBservice.dart';
-import 'package:rehnuma_mentor/services/Providers/MentorProvider.dart';
 
+import 'package:rehnuma_mentor/services/DBservice.dart';
 
 import '../../../../Global.dart';
 import 'noappointments.dart';
@@ -24,20 +19,19 @@ class MentorScheduledAppointments extends StatefulWidget {
 
 class _MentorScheduledAppointmentsState
     extends State<MentorScheduledAppointments> {
+  var appointments = [];
 
-      List<AppointmentModel> appointments = [];
   Future getPastAppointments(String mentorId) async {
-    await FirebaseApi().getActiveAppointments(mentorId)
-       // getActiveAppointments(studentProvider.currStudent.studentId)
+    await FirebaseApi().getActiveAppointments(mentorId);
+  }
+  // getActiveAppointments(studentProvider.currStudent.studentId)
 
   MentorProvider mentorProvider;
   DBService _db = DBService();
-  List<AppointmentModel> appointments = [];
 
   Future getScheduledAppointments() async {
     await _db
         .getScheduledAppointments(mentorProvider.currMentor.mentorId)
-
         .then((value) {
       if (value != null) {
         print(value);
@@ -58,7 +52,6 @@ class _MentorScheduledAppointmentsState
 
     mentorProvider = Provider.of<MentorProvider>(context, listen: false);
     getScheduledAppointments();
-
   }
 
   @override
@@ -84,10 +77,9 @@ class _MentorScheduledAppointmentsState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
-
             children: [
               appointments.length == 0
-                  ? NoAppointmentsFound()
+                  ? Container(child:Text('No Appointments'))
                   : ListView.builder(
                       shrinkWrap: true,
                       primary: false,
@@ -97,11 +89,38 @@ class _MentorScheduledAppointmentsState
                           appointmentModel: appointments[i],
                         );
                       })
-
             ],
           ),
         ),
       ),
     );
   }
+}
+
+Widget noAppointmentFound(BuildContext context) {
+  var size = MediaQuery.of(context).size;
+  return Container(
+    color: primaryColor,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: size.height / 2,
+          width: size.width / 1.3,
+          child: Image.asset(
+            'assets/images/appointment.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        Text(
+          'No Appointments found!',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: inputTextColor,
+          ),
+        ),
+      ],
+    ),
+  );
 }
